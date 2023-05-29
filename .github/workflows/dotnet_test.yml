@@ -1,0 +1,37 @@
+# This workflow will build a .NET project
+
+name: .NET
+
+on:
+  push:
+    branches: [ "dev" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 6.0.x
+        
+    - name: Restore program dependencies 
+      run: dotnet restore ToDoListApp.sln
+      working-directory: ToDoListApp/
+    - name: Restore testing dependencies
+      run: dotnet restore
+      working-directory: ToDoListAppTest/
+    - name: Build program
+      run: dotnet build --no-restore ToDoListApp.sln
+      working-directory: ToDoListApp/
+    - name: Build tests
+      run: dotnet build --no-restore
+      working-directory: ToDoListAppTest/
+    - name: Test
+      run: dotnet test --no-build --verbosity normal
+      working-directory: ToDoListAppTest/
