@@ -15,10 +15,10 @@ namespace ToDoListAppTest {
     [TestMethod]
     public void ListCreationTest() {
       ToDoList list = new();
-      list.Add(new ("Do 1", DateTime.Parse("2023 31 травня 00:02")));
+      list.Add(new ("Do 1", DateTime.Parse("2023 31 May 00:02")));
       string capComp = "Do 1";
       string descComp = "No description";
-      string deadLComp = "2023 31 травня 00:02";
+      string deadLComp = "2023 31 May 00:02";
       Assert.AreEqual(list[0].caption, capComp);
       Assert.AreEqual(list[0].description, descComp);
       Assert.AreEqual(list[0].deadLine, deadLComp);
