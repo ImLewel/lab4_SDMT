@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,22 +9,24 @@ namespace ToDoListApp {
   public class TDTask {
     public string caption;
     public string description;
-    public DateTime deadLine;
+    public string deadLine;
     bool done = false;
+    string pattern = "yyyy dd MMMM HH:mm";
+    [JsonConstructor]
     public TDTask(string capt, string desc, DateTime deadL) {
       caption = capt;
       description = desc;
-      deadLine = deadL;
+      deadLine = deadL.ToString(pattern);
     }
     public TDTask(string capt, string desc) {
       caption = capt;
       description = desc;
-      deadLine = DateTime.MaxValue;
+      deadLine = "No deadline";
     }
     public TDTask(string capt, DateTime deadL) {
       caption = capt;
-      description = "";
-      deadLine = deadL;
+      description = "No description";
+      deadLine = deadL.ToString(pattern);
     }
     public void SetDone() => done = true;
   }
