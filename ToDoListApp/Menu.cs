@@ -6,11 +6,17 @@ using System.Threading.Tasks;
 
 namespace ToDoListApp {
   public class Menu : List<MenuOption> {
-    int selection;
-    int clearCount;
+    public int selection;
+    public int clearCount;
+    string caption;
+    public Menu(string _caption) {
+      caption = _caption;
+    }
     public void Render() {
       int pos = 0;
       clearCount = pos;
+      Console.WriteLine(this.caption);
+      ++clearCount;
       foreach (MenuOption option in this) {
         Console.WriteLine($"{pos}. {option.label}");
         ++pos;
