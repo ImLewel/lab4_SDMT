@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-
-namespace ToDoListApp {
+﻿namespace ToDoListApp {
   public class Program {
     static void Main(string[] args) {
       ToDoList list = new();
