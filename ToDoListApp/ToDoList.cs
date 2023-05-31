@@ -2,7 +2,13 @@
 
 namespace ToDoListApp {
   public class ToDoList : List<TDTask> {
-    string savePath = File.ReadAllText("SavePath");
+    string workingDirectory = Environment.CurrentDirectory;
+    string saveFileName = "data.txt";
+    string savePath;
+    public ToDoList() {
+      string projectDirectory = Directory.GetParent(workingDirectory).Parent.Parent.FullName;
+      savePath = Path.Combine(projectDirectory, saveFileName);
+    }
     public void Save() {
       File.WriteAllText(savePath, String.Empty);
       string data;
