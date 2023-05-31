@@ -12,6 +12,10 @@ namespace ToDoListApp {
     public Menu(string _caption) {
       caption = _caption;
     }
+    public void Render(int value) {
+      ClearText(value);
+      Render();
+    }
     public void Render() {
       int pos = 0;
       clearCount = pos;
@@ -47,11 +51,14 @@ namespace ToDoListApp {
     }
     void OptionSelection() {
       selection = GetAnswer();
-      Console.CursorTop -= clearCount;
-      for (int _pos = 0; _pos < clearCount; ++_pos)
-        Console.WriteLine(new string(' ', Console.WindowWidth));
-      Console.CursorTop -= clearCount;
+      ClearText(clearCount);
       this[selection].action();
+    }
+    void ClearText(int from) {
+      Console.CursorTop -= from;
+      for (int _pos = 0; _pos < from; ++_pos)
+        Console.WriteLine(new string(' ', Console.WindowWidth));
+      Console.CursorTop -= from;
     }
   }
   public class MenuOption {

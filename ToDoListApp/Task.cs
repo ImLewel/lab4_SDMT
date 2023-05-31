@@ -31,5 +31,8 @@ namespace ToDoListApp {
       deadLine = deadL.ToString(pattern, culture);
     }
     public void SetDone() => done = true;
+    public override string ToString() {
+      return $"Caption: {caption}; Description: {description}; Deadline: {deadLine}";
+    }
   }
 }
