@@ -32,7 +32,7 @@ namespace ToDoListApp {
     public void Edit(int pos) {
       string message =
         $"===Editing task===\n" +
-        $"Hit Enter if you don't wan't to keep the field\n" +
+        $"Hit Enter if you want to keep the field\n" +
         $"Hit Space and Enter if you wan't unset the field\n" +
         $"Type anything you want to change the field\n" +
         $"Notice: the date format is \"yyyy dd MMMM HH:mm\", so you should write i.e. 2022 22 April 12:46\n" +
@@ -52,11 +52,11 @@ namespace ToDoListApp {
         tmpDesc = null;
       else if (tmpDesc == "") tmpDesc = this[pos].Description;
       if (tmpDeadLine == "")
-        nTmpDt = DateTime.ParseExact(this[pos].DeadLine, TDTask.Pattern, TDTask.Culture);
+        nTmpDt = this[pos].DeadLine;
       else {
         try {
           if (tmpDeadLine != " ")
-            nTmpDt = DateTime.ParseExact(tmpDeadLine, TDTask.Pattern, TDTask.Culture);
+            nTmpDt = DateTime.Parse(tmpDeadLine);
           else
             nTmpDt = null;   
         }
@@ -74,7 +74,7 @@ namespace ToDoListApp {
       string message =
         $"===Adding task===\n" +
         $"Type anything you want to set the field\n" +
-        $"Hit Space and Enter if you wan't to set the field as default\n" +
+        $"Hit Space and Enter if you want to set the field as default\n" +
         $"Notice: the date format is \"yyyy dd MMMM HH:mm\", so you should write i.e. 2022 22 April 12:46\n" +
         $"Notice: if the format is wrong, it will automatically set as \"No deadline\"\n";
       Console.WriteLine(message);
@@ -92,7 +92,7 @@ namespace ToDoListApp {
         nTmpDt = null;
       else {
         try {
-          nTmpDt = DateTime.ParseExact(tmpDeadLine, TDTask.Pattern, TDTask.Culture);
+          nTmpDt = DateTime.Parse(tmpDeadLine);
         }
         catch (FormatException e) {
           Console.WriteLine("Wrong format!");

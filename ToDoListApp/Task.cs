@@ -3,12 +3,13 @@ using System.Globalization;
 
 namespace ToDoListApp {
   public class TDTask {
-    [JsonRequired]
+    [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
     public string Caption;
-    [JsonRequired]
+    [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
     public string Description;
-    [JsonRequired]
-    public string DeadLine;
+    [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+    public DateTime? DeadLine;
+    public string? deadLineStr;
     [JsonRequired]
     public string Done = "Not done yet";
     [JsonIgnore]
@@ -22,11 +23,12 @@ namespace ToDoListApp {
     public void Set(string? capt, string? desc, DateTime? deadL) {
       Caption = ((capt is null) || (capt == " ")) ? "No caption" : capt;
       Description = ((desc is null) || (desc == " ")) ? "No description" : desc;
-      DeadLine = (deadL is null) ? "No deadline" : ((DateTime)deadL).ToString(Pattern, Culture);
+      DeadLine = deadL;
+      deadLineStr = (deadL is null) ? "No deadline" : ((DateTime)DeadLine).ToString(Pattern, Culture);
     }
     public void SetDone() => Done = "Done";
     public override string ToString() {
-      return $"Caption: {Caption}; Description: {Description}; Deadline: {DeadLine}; Done: {Done}";
+      return $"Caption: {Caption}; Description: {Description}; Deadline: {deadLineStr}; Done: {Done}";
     }
   }
 }
