@@ -35,6 +35,7 @@
 
       void RefillTasksMenu() {
         TaskList.Clear();
+        list.Save();
         TaskList.Add(new MenuOption("Back to second", () => MainMenu.Render()));
         foreach (TDTask task in list)
           TaskList.Add(new (task.ToString(), () => TaskOptions.Render()));

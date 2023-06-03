@@ -2,26 +2,14 @@
 
 namespace ToDoListApp {
   public class ToDoList : List<TDTask> {
-    string workingDirectory = Environment.CurrentDirectory;
-    string saveFileName = "data.txt";
     string savePath;
-    public ToDoList() {
+    public ToDoList(string saveFileName = "data.txt") {
+      string workingDirectory = Environment.CurrentDirectory;
       string projectDirectory = Directory.GetParent(workingDirectory).Parent.Parent.FullName;
       savePath = Path.Combine(projectDirectory, saveFileName);
     }
-    public void Save() {
-      File.WriteAllText(savePath, String.Empty);
-      string data;
-      int pos = 0;
-      foreach (TDTask task in this) {
-        data = JsonConvert.SerializeObject(task);
-        if (pos != this.Count - 1)
-          File.AppendAllText(savePath, $"{data}\n");
-        else
-          File.AppendAllText(savePath, $"{data}");
-        ++pos;
-      }
-    }
+
+    public void Save() => File.WriteAllText(savePath, string.Join("\n", this.Select(task => JsonConvert.SerializeObject(task))));
     public void Get() {
       Clear();
       string[] allData = File.ReadAllText(savePath).Split("\n");
@@ -30,14 +18,31 @@ namespace ToDoListApp {
         this.Add(tmpTask);
       }
     }
+    public new bool Remove(TDTask item) {
+      bool res = base.Remove(item);
+      if (res)
+        Console.WriteLine("Successfully removed task!");
+      else
+        Console.WriteLine("Task removing failed!");
+      Console.ReadLine();
+      Console.Clear();
+      return res;
+    }
+
     public void Edit(int pos) {
-      DateTime? nTmpDt;
-      DateTime tmpDt;
-      DateTime.TryParse(this[pos].DeadLine, out tmpDt);
-      nTmpDt = tmpDt;
-      string? tmpCap = Ask("New caption: (Press Enter to skip)");
-      string? tmpDesc = Ask("New description: (Press Enter to skip)");
-      string? tmpDeadLine = Ask("New deadline (format example 2022 22 April 12:46): (Press Enter to skip)");
+      string message =
+        $"===Editing task===\n" +
+        $"Hit Enter if you don't wan't to keep the field\n" +
+        $"Hit Space and Enter if you don't wan't unset the field\n" +
+        $"Type anything you want to change the field\n" +
+        $"Notice: the date format is \"yyyy dd MMMM HH:mm\", so you should write i.e. 2022 22 April 12:46\n";
+      Console.WriteLine(message);
+
+      DateTime? nTmpDt = null;
+      string? tmpCap = Ask("New caption:");
+      string? tmpDesc = Ask("New description:");
+      string? tmpDeadLine = Ask("New deadline:");
+
       if (tmpCap == " ")
           tmpCap = null;
       else if (tmpCap == "") 
@@ -45,17 +50,22 @@ namespace ToDoListApp {
       if (tmpDesc == " ")
         tmpDesc = null;
       else if (tmpDesc == "") tmpDesc = this[pos].Description;
-      if (tmpDeadLine != "") {
-        if (DateTime.TryParse(tmpDeadLine, out tmpDt) == false) {
-          Ask("No date passed! Automatically set as \"No deadline\"");
-          nTmpDt = null;
+      if (tmpDeadLine == "")
+        nTmpDt = DateTime.ParseExact(this[pos].DeadLine, this[pos].Pattern, this[pos].Culture);
+      else {
+        try {
+          if (tmpDeadLine != " ")
+            nTmpDt = DateTime.ParseExact(tmpDeadLine, this[pos].Pattern, this[pos].Culture);
+          else
+            nTmpDt = null;   
         }
-        else
-          nTmpDt = tmpDt;
+        catch (FormatException e) {
+          Console.WriteLine("Wrong format, changes not applied!");
+        }
       }
       this[pos] = new(tmpCap, tmpDesc, nTmpDt);
       Console.WriteLine("Successfully edited task!");
-      Console.ReadKey();
+      Console.ReadLine();
       Console.Clear();
     }
 
