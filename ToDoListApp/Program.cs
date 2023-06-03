@@ -12,6 +12,12 @@
 
       MainMenu.Add(new MenuOption("Exit", () => Console.ReadKey()));
       MainMenu.Add(new MenuOption("Show tasks", () => TaskList.Render()));
+      MainMenu.Add(new MenuOption("Add task", () => {
+          list.Add();
+          RefillTasksMenu();
+          MainMenu.Render();
+        })
+      );
 
       RefillTasksMenu();
 

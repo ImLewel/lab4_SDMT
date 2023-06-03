@@ -33,9 +33,10 @@ namespace ToDoListApp {
       string message =
         $"===Editing task===\n" +
         $"Hit Enter if you don't wan't to keep the field\n" +
-        $"Hit Space and Enter if you don't wan't unset the field\n" +
+        $"Hit Space and Enter if you wan't unset the field\n" +
         $"Type anything you want to change the field\n" +
-        $"Notice: the date format is \"yyyy dd MMMM HH:mm\", so you should write i.e. 2022 22 April 12:46\n";
+        $"Notice: the date format is \"yyyy dd MMMM HH:mm\", so you should write i.e. 2022 22 April 12:46\n" +
+        $"Notice: if the format is wrong, it will automatically set as \"No deadline\"\n";
       Console.WriteLine(message);
 
       DateTime? nTmpDt = null;
@@ -44,18 +45,18 @@ namespace ToDoListApp {
       string? tmpDeadLine = Ask("New deadline:");
 
       if (tmpCap == " ")
-          tmpCap = null;
+        tmpCap = null;
       else if (tmpCap == "") 
         tmpCap = this[pos].Caption;
       if (tmpDesc == " ")
         tmpDesc = null;
       else if (tmpDesc == "") tmpDesc = this[pos].Description;
       if (tmpDeadLine == "")
-        nTmpDt = DateTime.ParseExact(this[pos].DeadLine, this[pos].Pattern, this[pos].Culture);
+        nTmpDt = DateTime.ParseExact(this[pos].DeadLine, TDTask.Pattern, TDTask.Culture);
       else {
         try {
           if (tmpDeadLine != " ")
-            nTmpDt = DateTime.ParseExact(tmpDeadLine, this[pos].Pattern, this[pos].Culture);
+            nTmpDt = DateTime.ParseExact(tmpDeadLine, TDTask.Pattern, TDTask.Culture);
           else
             nTmpDt = null;   
         }
@@ -64,7 +65,41 @@ namespace ToDoListApp {
         }
       }
       this[pos] = new(tmpCap, tmpDesc, nTmpDt);
-      Console.WriteLine("Successfully edited task!");
+      Console.WriteLine("Successfully edited the task!");
+      Console.ReadLine();
+      Console.Clear();
+    }
+
+    public void Add() {
+      string message =
+        $"===Adding task===\n" +
+        $"Type anything you want to set the field\n" +
+        $"Hit Space and Enter if you wan't to set the field as default\n" +
+        $"Notice: the date format is \"yyyy dd MMMM HH:mm\", so you should write i.e. 2022 22 April 12:46\n" +
+        $"Notice: if the format is wrong, it will automatically set as \"No deadline\"\n";
+      Console.WriteLine(message);
+
+      DateTime? nTmpDt = null;
+      string? tmpCap = Ask("New caption:");
+      string? tmpDesc = Ask("New description:");
+      string? tmpDeadLine = Ask("New deadline:");
+
+      if (tmpCap == " " || tmpCap == "")
+        tmpCap = null;
+      if (tmpDesc == " " || tmpDesc == "")
+        tmpDesc = null;
+      if (tmpDeadLine == " " || tmpDeadLine == "")
+        nTmpDt = null;
+      else {
+        try {
+          nTmpDt = DateTime.ParseExact(tmpDeadLine, TDTask.Pattern, TDTask.Culture);
+        }
+        catch (FormatException e) {
+          Console.WriteLine("Wrong format!");
+        }
+      }
+      Add(new(tmpCap, tmpDesc, nTmpDt));
+      Console.WriteLine("Successfully added the task!");
       Console.ReadLine();
       Console.Clear();
     }

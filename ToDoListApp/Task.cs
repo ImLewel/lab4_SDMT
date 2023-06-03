@@ -9,9 +9,9 @@ namespace ToDoListApp {
     public string DeadLine;
     bool Done = false;
     [JsonIgnore]
-    public readonly CultureInfo Culture = new CultureInfo("en-EN");
+    public readonly static CultureInfo Culture = new CultureInfo("en-EN");
     [JsonIgnore]
-    public readonly string Pattern = "yyyy dd MMMM HH:mm";
+    public readonly static string Pattern = "yyyy dd MMMM HH:mm";
     [JsonConstructor]
     public TDTask(string? capt, string? desc, DateTime? deadL) {
       Caption = ((capt is null) || (capt == " ")) ? "No caption" : capt;
