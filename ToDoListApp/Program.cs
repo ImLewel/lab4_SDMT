@@ -6,11 +6,12 @@
       Menu TaskOptions = new("<What to do with task?>");
       Menu FilterMenu = new("<Filter tasks by>");
       Menu DeadlineList = new("<Tasks filtered from near to far deadline>");
+      Menu ExpiredList = new("<Tasks which aren't done but expired>");
       ToDoList list = new();
-      list.Add(new("Caption 1", "Description 1", DateTime.Parse("2024 18 June 17:50")));
-      list.Add(new("Caption 2", "Description 2", DateTime.Now));
+      list.Add(new("Caption 1", "Description 1", DateTime.Parse("2011 18 June 17:50")));
+      list.Add(new("Caption 2", "Description 2", DateTime.Parse("2023 1 July 23:00")));
       list.Add(new("Caption 3", "Description 3", DateTime.Parse("2022 12 April 12:46")));
-      MainMenu.Add(new MenuOption("Exit", () => Console.ReadKey()));
+      MainMenu.Add(new MenuOption("Exit", () => Environment.Exit(0)));
       MainMenu.Add(new MenuOption("Show tasks", () => TaskList.Render()));
       MainMenu.Add(new MenuOption("Add task", () => {
           list.Add();
@@ -51,6 +52,11 @@
           DeadlineList.Render();
         })
       );
+      FilterMenu.Add(new ("Expired", () => {
+          RefillExpiredList();
+          ExpiredList.Render();
+        })
+      );
 
       MainMenu.Render();
 
@@ -69,6 +75,14 @@
         selectedWithDeadlines.Sort((first, second) => ((DateTime)first.DeadLine).CompareTo((DateTime)second.DeadLine));
         foreach (TDTask task in selectedWithDeadlines)
           DeadlineList.Add(new(task.ToString(), () => DeadlineList.Render()));
+      }
+
+      void RefillExpiredList() {
+        ExpiredList.Clear();
+        ExpiredList.Add(new MenuOption("Back to filters", () => FilterMenu.Render()));
+        var selectedExpired = list.Where(task => task.DeadLine < DateTime.Now && task.Done != "Done").ToList();
+        foreach (TDTask task in selectedExpired)
+          ExpiredList.Add(new(task.ToString(), () => DeadlineList.Render()));
       }
     }
   }
