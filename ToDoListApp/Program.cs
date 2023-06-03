@@ -65,7 +65,7 @@
       void RefillDeadlineList() {
         DeadlineList.Clear();
         DeadlineList.Add(new MenuOption("Back to filters", () => FilterMenu.Render()));
-        var selectedWithDeadlines = list.Where(task => task.deadLineStr != "No deadline").ToList();
+        var selectedWithDeadlines = list.Where(task => task.deadLineStr != "No deadline" || task.Done != "Done").ToList();
         selectedWithDeadlines.Sort((first, second) => ((DateTime)first.DeadLine).CompareTo((DateTime)second.DeadLine));
         foreach (TDTask task in selectedWithDeadlines)
           DeadlineList.Add(new(task.ToString(), () => DeadlineList.Render()));

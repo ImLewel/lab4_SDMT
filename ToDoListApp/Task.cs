@@ -12,6 +12,8 @@ namespace ToDoListApp {
     public string? deadLineStr;
     [JsonRequired]
     public string Done = "Not done yet";
+    [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+    public DateTime CompletionDate;
     [JsonIgnore]
     public readonly static CultureInfo Culture = new CultureInfo("en-EN");
     [JsonIgnore]
@@ -26,9 +28,15 @@ namespace ToDoListApp {
       DeadLine = deadL;
       deadLineStr = (deadL is null) ? "No deadline" : ((DateTime)DeadLine).ToString(Pattern, Culture);
     }
-    public void SetDone() => Done = "Done";
+    public void SetDone() {
+      Done = "Done";
+      CompletionDate = DateTime.Now;
+    }
     public override string ToString() {
-      return $"Caption: {Caption}; Description: {Description}; Deadline: {deadLineStr}; Done: {Done}";
+      if (Done == "Done")
+        return $"Caption: {Caption}; Description: {Description}; Deadline: {deadLineStr}; Done: {Done}; Completion date: {CompletionDate.ToString(Pattern, Culture)}";
+      else
+        return $"Caption: {Caption}; Description: {Description}; Deadline: {deadLineStr}; Done: {Done}";
     }
   }
 }
