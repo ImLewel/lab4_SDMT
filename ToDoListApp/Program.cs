@@ -36,6 +36,13 @@
           TaskList.Render();
         })
       );
+      TaskOptions.Add(
+        new MenuOption("Mark as done", () => {
+          list[TaskList.selection - 1].SetDone();
+          RefillTasksMenu();
+          TaskList.Render();
+        })
+      );
 
       MainMenu.Render();
 

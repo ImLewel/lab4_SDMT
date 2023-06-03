@@ -64,7 +64,7 @@ namespace ToDoListApp {
           Console.WriteLine("Wrong format, changes not applied!");
         }
       }
-      this[pos] = new(tmpCap, tmpDesc, nTmpDt);
+      this[pos].Set(tmpCap, tmpDesc, nTmpDt);
       Console.WriteLine("Successfully edited the task!");
       Console.ReadLine();
       Console.Clear();
