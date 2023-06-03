@@ -30,15 +30,14 @@ namespace ToDoListApp {
         this.Add(tmpTask);
       }
     }
-    public int Edit(int pos) {
-      int cursorUp = 0;
+    public void Edit(int pos) {
       DateTime? nTmpDt;
       DateTime tmpDt;
       DateTime.TryParse(this[pos].DeadLine, out tmpDt);
       nTmpDt = tmpDt;
-      string? tmpCap = Ask("New caption: (Press Enter to skip)", ref cursorUp);
-      string? tmpDesc = Ask("New description: (Press Enter to skip)", ref cursorUp);
-      string? tmpDeadLine = Ask("New deadline (format example 2022 22 April 12:46): (Press Enter to skip)", ref cursorUp);
+      string? tmpCap = Ask("New caption: (Press Enter to skip)");
+      string? tmpDesc = Ask("New description: (Press Enter to skip)");
+      string? tmpDeadLine = Ask("New deadline (format example 2022 22 April 12:46): (Press Enter to skip)");
       if (tmpCap == " ")
           tmpCap = null;
       else if (tmpCap == "") 
@@ -48,19 +47,20 @@ namespace ToDoListApp {
       else if (tmpDesc == "") tmpDesc = this[pos].Description;
       if (tmpDeadLine != "") {
         if (DateTime.TryParse(tmpDeadLine, out tmpDt) == false) {
-          Ask("No date passed! Automatically set as \"No deadline\"", ref cursorUp);
+          Ask("No date passed! Automatically set as \"No deadline\"");
           nTmpDt = null;
         }
         else
           nTmpDt = tmpDt;
       }
       this[pos] = new(tmpCap, tmpDesc, nTmpDt);
-      return cursorUp;
+      Console.WriteLine("Successfully edited task!");
+      Console.ReadKey();
+      Console.Clear();
     }
 
-    string? Ask(string text, ref int carriageUp) {
+    string? Ask(string text) {
       Console.WriteLine(text);
-      carriageUp += 2;
       return Console.ReadLine();
     }
   }
