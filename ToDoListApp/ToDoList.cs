@@ -11,12 +11,14 @@ namespace ToDoListApp {
 
     public void Save() => File.WriteAllText(savePath, string.Join("\n", this.Select(task => JsonConvert.SerializeObject(task))));
     public void Get() {
-      if (File.ReadAllText(savePath).Length > 0) {
-        Clear();
-        string[] allData = File.ReadAllText(savePath).Split("\n");
-        foreach (string text in allData) {
-          TDTask tmpTask = JsonConvert.DeserializeObject<TDTask>(text);
-          this.Add(tmpTask);
+      if (File.Exists(savePath)) {
+        if (File.ReadAllText(savePath).Length > 0) {
+          Clear();
+          string[] allData = File.ReadAllText(savePath).Split("\n");
+          foreach (string text in allData) {
+            TDTask tmpTask = JsonConvert.DeserializeObject<TDTask>(text);
+            this.Add(tmpTask);
+          }
         }
       }
     }
