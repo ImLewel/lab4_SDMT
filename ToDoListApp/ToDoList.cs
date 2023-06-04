@@ -1,21 +1,23 @@
 ﻿using Newtonsoft.Json;
 
 namespace ToDoListApp {
+#nullable disable warnings
   public class ToDoList : List<TDTask> {
     string savePath;
     public ToDoList(string saveFileName = "data.txt") {
       string workingDirectory = Environment.CurrentDirectory;
-      string projectDirectory = Directory.GetParent(workingDirectory).Parent.Parent.FullName;
-      savePath = Path.Combine(projectDirectory, saveFileName);
+      savePath = Path.Combine(workingDirectory, saveFileName);
     }
 
     public void Save() => File.WriteAllText(savePath, string.Join("\n", this.Select(task => JsonConvert.SerializeObject(task))));
     public void Get() {
-      Clear();
-      string[] allData = File.ReadAllText(savePath).Split("\n");
-      foreach (string text in allData) {
-        TDTask tmpTask = JsonConvert.DeserializeObject<TDTask>(text);
-        this.Add(tmpTask);
+      if (File.ReadAllText(savePath).Length > 0) {
+        Clear();
+        string[] allData = File.ReadAllText(savePath).Split("\n");
+        foreach (string text in allData) {
+          TDTask tmpTask = JsonConvert.DeserializeObject<TDTask>(text);
+          this.Add(tmpTask);
+        }
       }
     }
     public new bool Remove(TDTask item) {
@@ -26,6 +28,11 @@ namespace ToDoListApp {
         Console.WriteLine("Task removing failed!");
       Console.ReadLine();
       Console.Clear();
+      return res;
+    }
+
+    public bool Remove(int pos) {
+      bool res = base.Remove(this[pos]);
       return res;
     }
 
@@ -60,7 +67,7 @@ namespace ToDoListApp {
           else
             nTmpDt = null;   
         }
-        catch (FormatException e) {
+        catch {
           Console.WriteLine("Wrong format, changes not applied!");
         }
       }
@@ -94,7 +101,7 @@ namespace ToDoListApp {
         try {
           nTmpDt = DateTime.Parse(tmpDeadLine);
         }
-        catch (FormatException e) {
+        catch {
           Console.WriteLine("Wrong format!");
         }
       }
@@ -102,6 +109,50 @@ namespace ToDoListApp {
       Console.WriteLine("Successfully added the task!");
       Console.ReadLine();
       Console.Clear();
+    }
+
+    public void Add(string? capt, string? desc, DateTime? nTmpDt) {
+      Add(new(capt, desc, nTmpDt));
+    }
+    public bool Add(string? capt, string? desc, string? deadline) {
+      DateTime? nTmpDt = null;
+      try {
+        nTmpDt = DateTime.Parse(deadline);
+      }
+      catch {
+        nTmpDt = null;
+      }
+      Add(new(capt, desc, nTmpDt));
+      return true;
+    }
+
+    public void Edit(int pos, string? capt, string? desc, DateTime? nTmpDt) {
+      if (capt == "")
+        capt = this[pos].Caption;
+      if (desc == "")
+        desc = this[pos].Description;
+      if (nTmpDt == this[pos].DeadLine)
+        nTmpDt = this[pos].DeadLine;
+      this[pos].Set(capt, desc, nTmpDt);
+    }
+    public bool Edit(int pos, string? capt, string? desc, string deadline) {
+      DateTime? nTmpDt = null;
+      if (capt == "")
+        capt = this[pos].Caption;
+      if (desc == "")
+        desc = this[pos].Description;
+      if (deadline == "")
+        nTmpDt = this[pos].DeadLine;
+      else {
+        try {
+          nTmpDt = DateTime.Parse(deadline);
+        }
+        catch {
+          nTmpDt = null;
+        }
+      }
+      this[pos].Set(capt, desc, nTmpDt);
+      return true;
     }
 
     string? Ask(string text) {

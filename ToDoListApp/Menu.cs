@@ -1,4 +1,5 @@
 ﻿namespace ToDoListApp {
+#nullable disable warnings
   public class Menu : List<MenuOption> {
     public int selection;
     string caption;
@@ -20,7 +21,7 @@
       try {
         selection = int.Parse(answer);
       }
-      catch (FormatException e) {
+      catch {
         Console.WriteLine("No number provided, try again");
         return GetAnswer();
       }

@@ -1,42 +1,60 @@
 ﻿using Newtonsoft.Json;
 using System.Globalization;
+using System.Runtime.Serialization;
 
 namespace ToDoListApp {
+#pragma warning disable
   public class TDTask {
-    [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-    public string Caption;
-    [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-    public string Description;
-    [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+    [JsonProperty(Required = Required.AllowNull)]
+    public string? Caption;
+    [JsonProperty(Required = Required.AllowNull)]
+    public string? Description;
+    [JsonProperty(Required = Required.AllowNull)]
     public DateTime? DeadLine;
-    public string? deadLineStr;
     [JsonRequired]
     public string Done = "Not done yet";
-    [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+    [JsonProperty(Required = Required.AllowNull)]
     public DateTime CompletionDate;
+    [JsonIgnore]
+    public string deadLineStr;
     [JsonIgnore]
     public readonly static CultureInfo Culture = new CultureInfo("en-EN");
     [JsonIgnore]
     public readonly static string Pattern = "yyyy dd MMMM HH:mm";
-    [JsonConstructor]
     public TDTask(string? capt, string? desc, DateTime? deadL) {
       Set(capt, desc, deadL);
     }
     public void Set(string? capt, string? desc, DateTime? deadL) {
       Caption = ((capt is null) || (capt == " ")) ? "No caption" : capt;
       Description = ((desc is null) || (desc == " ")) ? "No description" : desc;
-      DeadLine = deadL;
-      deadLineStr = (deadL is null) ? "No deadline" : ((DateTime)DeadLine).ToString(Pattern, Culture);
+      DeadLine = (deadL is null) ? null : deadL;
+      SetDeadLineStr();
     }
     public void SetDone() {
-      Done = "Done";
-      CompletionDate = DateTime.Now;
+      if (Done != "Done") {
+        Done = "Done";
+        CompletionDate = DateTime.Now;
+      }
     }
+    [OnDeserialized]
+    void OnDeserializedMethod(StreamingContext context) => SetDeadLineStr();
+    void SetDeadLineStr() =>
+      deadLineStr = (DeadLine is null) ? "No deadline" : ((DateTime)DeadLine).ToString(Pattern, Culture);
+
     public override string ToString() {
       if (Done == "Done")
-        return $"Caption: {Caption}; Description: {Description}; Deadline: {deadLineStr}; Done: {Done}; Completion date: {CompletionDate.ToString(Pattern, Culture)}";
+        return 
+          $"\n\tCaption: {Caption}\n" +
+          $"\tDescription: {Description}\n" +
+          $"\tDeadline: {deadLineStr}\n" +
+          $"\tDone: {Done}\n" +
+          $"\tCompletion date: {CompletionDate.ToString(Pattern, Culture)}";
       else
-        return $"Caption: {Caption}; Description: {Description}; Deadline: {deadLineStr}; Done: {Done}";
+        return 
+          $"\n\tCaption: {Caption}\n" +
+          $"\tDescription: {Description}\n" +
+          $"\tDeadline: {deadLineStr}\n" +
+          $"\tDone: {Done}";
     }
   }
 }
